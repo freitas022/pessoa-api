@@ -1,21 +1,30 @@
 package com.backend.pessoaapi.domain;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Objects;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "tb_pessoa")
 public class Pessoa implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String nome;
-	private Date dtNascimento;
+	private String dtNascimento;
 
 	public Pessoa() {
 
 	}
 
-	public Pessoa(Long id, String nome, Date dtNascimento) {
+	public Pessoa(Long id, String nome, String dtNascimento) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -38,11 +47,11 @@ public class Pessoa implements Serializable {
 		this.nome = nome;
 	}
 
-	public Date getDtNascimento() {
+	public String getDtNascimento() {
 		return dtNascimento;
 	}
 
-	public void setDtNascimento(Date dtNascimento) {
+	public void setDtNascimento(String dtNascimento) {
 		this.dtNascimento = dtNascimento;
 	}
 
