@@ -1,17 +1,23 @@
 package com.backend.pessoaapi.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_pessoa")
 public class Pessoa implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -19,6 +25,9 @@ public class Pessoa implements Serializable {
 	private Long id;
 	private String nome;
 	private String dtNascimento;
+	
+	@OneToMany(mappedBy = "pessoa")
+	private List<Endereco> enderecos = new ArrayList<>();
 
 	public Pessoa() {
 
@@ -53,6 +62,10 @@ public class Pessoa implements Serializable {
 
 	public void setDtNascimento(String dtNascimento) {
 		this.dtNascimento = dtNascimento;
+	}
+	
+	public List<Endereco> getEnderecos() {
+		return enderecos;
 	}
 
 	@Override
