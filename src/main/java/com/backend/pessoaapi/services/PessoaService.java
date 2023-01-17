@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.backend.pessoaapi.domain.Pessoa;
 import com.backend.pessoaapi.repositories.PessoaRepository;
+import com.backend.pessoaapi.services.exceptions.ResourceNotFoundException;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class PessoaService {
@@ -21,7 +24,7 @@ public class PessoaService {
 	
 	public Pessoa findById(Long id) {
 		Optional<Pessoa> obj = repo.findById(id);
-		return obj.get();
+		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
 	public Pessoa insert(Pessoa obj) {
@@ -29,9 +32,15 @@ public class PessoaService {
 	}
 
 	public Pessoa update(Long id, Pessoa obj) {
-		Pessoa entity = repo.getReferenceById(id);
-		updateData(entity, obj);
-		return repo.save(entity);
+		try {
+			Pessoa entity = repo.getReferenceById(id);
+			updateData(entity, obj);
+			return repo.save(entity);
+		}
+		catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException(id);
+		}
+		
 	}
 
 	private void updateData(Pessoa entity, Pessoa obj) {
