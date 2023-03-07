@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+PAYLOAD=$(echo '
+{
+  "cep": "12345000",
+  "logradouro": "RUA XPTO",
+  "numero": "100",
+  "cidade": "SAO PAULO",
+  "estado": "SP",
+  "status": "0",
+  "pessoa": {
+    "id": 1
+  }
+}
+')
+
+curl -s http://localhost:8080/api-enderecos/registrar -H "Content-Type: application/json" -d "$PAYLOAD"

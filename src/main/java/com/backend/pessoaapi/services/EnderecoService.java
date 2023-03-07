@@ -24,13 +24,7 @@ public class EnderecoService {
 	}
 	//
 	public Endereco save(Endereco novoEndereco) {
-		var endereco = new Endereco();
-		endereco.setCep(novoEndereco.getCep());
-		endereco.setLogradouro(novoEndereco.getLogradouro());
-		endereco.setNumero(novoEndereco.getNumero());
-		endereco.setCidade(novoEndereco.getCidade());
-		endereco.setEstado(novoEndereco.getEstado());
-		endereco.setStatus(Status.PRINCIPAL);
+		enderecoRepository.save(novoEndereco);
 		return novoEndereco;
 	}
 	//	
