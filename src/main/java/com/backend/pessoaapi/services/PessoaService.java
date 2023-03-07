@@ -3,49 +3,37 @@ package com.backend.pessoaapi.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.backend.pessoaapi.domain.Pessoa;
+import com.backend.pessoaapi.models.Pessoa;
 import com.backend.pessoaapi.repositories.PessoaRepository;
-import com.backend.pessoaapi.services.exceptions.ResourceNotFoundException;
 
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class PessoaService {
-
-	@Autowired
-	private PessoaRepository repo;
-
+	//
+	final PessoaRepository repository;
+	//
+	public PessoaService(PessoaRepository repository) {
+		this.repository = repository;
+	}
+	//
+	@Transactional
+	public Pessoa save (Pessoa pessoa) {
+		 return repository.save(pessoa);
+	}
+	//
 	public List<Pessoa> findAll() {
-		return repo.findAll();
+		return repository.findAll();
 	}
-	
-	public Pessoa findById(Long id) {
-		Optional<Pessoa> obj = repo.findById(id);
-		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
+	//
+	public Optional<Pessoa> findById(Long id) {
+		return repository.findById(id);
 	}
-
-	public Pessoa insert(Pessoa obj) {
-		return repo.save(obj);
+	//
+	@Transactional
+	public void delete(Pessoa pessoa) {
+		repository.delete(pessoa);		
 	}
-
-	public Pessoa update(Long id, Pessoa obj) {
-		try {
-			Pessoa entity = repo.getReferenceById(id);
-			updateData(entity, obj);
-			return repo.save(entity);
-		}
-		catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException(id);
-		}
-		
-	}
-
-	private void updateData(Pessoa entity, Pessoa obj) {
-		entity.setNome(obj.getNome());
-		entity.setDtNascimento(obj.getDtNascimento());
-	}
-
 }

@@ -3,47 +3,47 @@ package com.backend.pessoaapi.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.backend.pessoaapi.domain.Endereco;
+import com.backend.pessoaapi.enums.Status;
+import com.backend.pessoaapi.models.Endereco;
 import com.backend.pessoaapi.repositories.EnderecoRepository;
-import com.backend.pessoaapi.services.exceptions.ResourceNotFoundException;
+import com.backend.pessoaapi.repositories.PessoaRepository;
 
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class EnderecoService {
 
-	@Autowired
-	private EnderecoRepository enderecoRepository;
-
+	final EnderecoRepository enderecoRepository;
+	final PessoaRepository pessoaRepository;
+	
+	public EnderecoService(EnderecoRepository enderecoRepository, PessoaRepository pessoaRepository) {
+		this.enderecoRepository = enderecoRepository;
+		this.pessoaRepository = pessoaRepository;
+	}
+	//
+	public Endereco save(Endereco novoEndereco) {
+		var endereco = new Endereco();
+		endereco.setCep(novoEndereco.getCep());
+		endereco.setLogradouro(novoEndereco.getLogradouro());
+		endereco.setNumero(novoEndereco.getNumero());
+		endereco.setCidade(novoEndereco.getCidade());
+		endereco.setEstado(novoEndereco.getEstado());
+		endereco.setStatus(Status.PRINCIPAL);
+		return novoEndereco;
+	}
+	//	
 	public List<Endereco> findAll() {
 		return enderecoRepository.findAll();
 	}
-	
-	public Endereco findById(Long id) {
-		Optional<Endereco> obj = enderecoRepository.findById(id);
-		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
+	//	
+	public Optional<Endereco> findById(Long id) {
+		return enderecoRepository.findById(id);
 	}
-	
-	public Endereco update(Long id, Endereco obj) {
-		try {
-		Endereco entity = enderecoRepository.getReferenceById(id);
-		updateData(entity, obj);
-		return enderecoRepository.save(entity);
-		}
-		catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException(id);
-		}
+	//
+	@Transactional
+	public void atualizaStatus(Integer id, Status enderecoStatus) {
+		
 	}
-	
-	private void updateData(Endereco entity, Endereco obj) {
-		entity.setCep(obj.getCep());
-		entity.setCidade(obj.getCidade());
-		entity.setEnderecoStatus(obj.getEnderecoStatus());
-		entity.setLogradouro(obj.getLogradouro());
-		entity.setNumero(obj.getNumero());
-	}
-
 }

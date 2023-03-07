@@ -1,48 +1,26 @@
 package com.backend.pessoaapi.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.backend.pessoaapi.domain.Pessoa;
+import com.backend.pessoaapi.models.Endereco;
 
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class PessoaDTO implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 	
-	private Long id;
+	@NotBlank
 	private String nome;
+	@NotBlank
 	private String dtNascimento;
-
-	public PessoaDTO() {
-	}
-
-	public PessoaDTO(Pessoa obj) {
-		this.id = obj.getId();
-		this.nome = obj.getNome();
-		this.dtNascimento = obj.getDtNascimento();
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public String getDtNascimento() {
-		return dtNascimento;
-	}
-
-	public void setDtNascimento(String dtNascimento) {
-		this.dtNascimento = dtNascimento;
-	}
+	
+	private List<Endereco> enderecos = new ArrayList<>();
 
 }
