@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+PAYLOAD=$(echo '
+{
+  "nome": "test'$(uuidgen)'",
+  "dtNascimento": "01/01/1999",
+  "enderecos": []
+}
+')
+
+echo $PAYLOAD
+
+curl -s http://localhost:8080/api-pessoas/registrar -H "Content-Type: application/json" -d "$PAYLOAD"

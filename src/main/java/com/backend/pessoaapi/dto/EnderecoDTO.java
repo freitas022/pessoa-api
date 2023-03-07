@@ -31,6 +31,6 @@ public class EnderecoDTO implements Serializable{
 	
 	private Pessoa pessoa;
 	@Enumerated(EnumType.STRING)
-	private Status enderecoStatus;
+	private Status status;
 	
 }
