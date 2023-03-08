@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.pessoaapi.dto.PessoaDTO;
-import com.backend.pessoaapi.exceptions.RegraNegocioException;
 import com.backend.pessoaapi.models.Endereco;
 import com.backend.pessoaapi.models.Pessoa;
 import com.backend.pessoaapi.services.PessoaService;
@@ -24,7 +23,7 @@ import com.backend.pessoaapi.services.PessoaService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/api-pessoas")
+@RequestMapping(value = "/pessoas")
 public class PessoaController {
 
 	
@@ -34,56 +33,51 @@ public class PessoaController {
 		this.service = service;
 	}
 	//
-	@PostMapping(value = "/registrar")
-	public ResponseEntity<Object> salvarPessoa(@RequestBody @Valid PessoaDTO pessoaDto) {
+	@PostMapping(value = "/save")
+	public ResponseEntity<Object> savePessoa(@RequestBody @Valid PessoaDTO pessoaDto) {
 		var novaPessoa = new Pessoa();
 		BeanUtils.copyProperties(pessoaDto, novaPessoa);
 		return ResponseEntity.status(HttpStatus.CREATED).body(service.save(novaPessoa));
 	}
 	//
-	@GetMapping(value = "/pessoas")
-	public ResponseEntity<List<Pessoa>> obterPessoas() {
+	@GetMapping(value = "/getAll")
+	public ResponseEntity<List<Pessoa>> getPessoas() {
 		return ResponseEntity.status(HttpStatus.OK).body(service.findAll());
 	}
 	//
-	@GetMapping(value = "/pessoas/{id}")
-	public ResponseEntity<Object> obterPessoaPorId(@PathVariable(value = "id") Long id) {
+	@GetMapping(value = "/findBy/{id}")
+	public ResponseEntity<Object> getPessoaById(@PathVariable(value = "id") Long id) {
 		Optional<Pessoa> pessoaOptional = service.findById(id);
-		if (!pessoaOptional.isPresent()) {
-			throw new RegraNegocioException("Não foi possível encontrar o usuário " + id);
-			//return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado. Id: ." + id);
+		if (!pessoaOptional.isPresent() ) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado. Id: " + id);
 		}
 		
 		return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
 	}
 	//
-	@PutMapping(value = "/atualizar/{id}")
-	public ResponseEntity<Object> atualizarPessoa(@PathVariable Long id, @RequestBody @Valid PessoaDTO dto) {
+	@PutMapping(value = "/update/{id}")
+	public ResponseEntity<Object> updatePessoa(@PathVariable Long id, @RequestBody @Valid PessoaDTO objDto) {
 		Optional<Pessoa> pessoaOptional = service.findById(id);
 		if (!pessoaOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado. Id: ." + id);
-		}		
-		var pessoa = new Pessoa();
-		BeanUtils.copyProperties(dto, pessoa);
-		pessoa.setId(pessoaOptional.get().getId());
-		pessoa.setNome(pessoaOptional.get().getNome());
-		pessoa.setDtNascimento(pessoaOptional.get().getDtNascimento());
-		
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado. Id: " + id);
+		}	
+		var pessoa = pessoaOptional.get();
+		service.updateData(pessoa, objDto);	
 		return ResponseEntity.status(HttpStatus.OK).body(service.save(pessoa));
 	}
 	//
-	@DeleteMapping(value="/deletar/{id}")
-	public ResponseEntity<Object> deletarPessoa(@PathVariable(value = "id") Long id) {
+	@DeleteMapping(value="/delete/{id}")
+	public ResponseEntity<Object> deletePessoa(@PathVariable(value = "id") Long id) {
 		Optional<Pessoa> pessoaOptional = service.findById(id);
 		if (!pessoaOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrada. Id: ." + id);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado. Id: " + id);
 		}
 		service.delete(pessoaOptional.get());		
-		return ResponseEntity.status(HttpStatus.OK).body("Usuário deletado da base de dados");
+		return ResponseEntity.status(HttpStatus.OK).body("Usuário deletado da base de dados.");
 	}	
 	//
-	@GetMapping(value = "/pessoas/{id}/enderecos")
-	public ResponseEntity<List<Endereco>> buscarEnderecos(@PathVariable Long id) {
+	@GetMapping(value = "/{id}/enderecos")
+	public ResponseEntity<List<Endereco>> findAllEnderecosByPessoa(@PathVariable Long id) {
 		Optional<Pessoa> pessoaOptional = service.findById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(pessoaOptional.get().getEnderecos());
 	}

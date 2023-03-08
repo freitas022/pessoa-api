@@ -5,12 +5,13 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.backend.pessoaapi.dto.EnderecoDTO;
 import com.backend.pessoaapi.enums.Status;
 import com.backend.pessoaapi.models.Endereco;
 import com.backend.pessoaapi.repositories.EnderecoRepository;
 import com.backend.pessoaapi.repositories.PessoaRepository;
 
-import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 @Service
 public class EnderecoService {
@@ -36,8 +37,15 @@ public class EnderecoService {
 		return enderecoRepository.findById(id);
 	}
 	//
-	@Transactional
 	public void atualizaStatus(Integer id, Status enderecoStatus) {
 		
+	}
+	public void updateData(Endereco endereco, @Valid EnderecoDTO objDTO) {
+		endereco.setCep(objDTO.getCep());
+		endereco.setLogradouro(objDTO.getLogradouro());
+		endereco.setNumero(objDTO.getNumero());
+		endereco.setCidade(objDTO.getCidade());
+		endereco.setEstado(objDTO.getEstado());
+		endereco.setStatus(objDTO.getStatus());
 	}
 }

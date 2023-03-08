@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.backend.pessoaapi.dto.PessoaDTO;
 import com.backend.pessoaapi.models.Pessoa;
 import com.backend.pessoaapi.repositories.PessoaRepository;
 
@@ -29,11 +30,15 @@ public class PessoaService {
 	}
 	//
 	public Optional<Pessoa> findById(Long id) {
-		return repository.findById(id);
+		return repository.findById(id);	
 	}
 	//
 	@Transactional
 	public void delete(Pessoa pessoa) {
-		repository.delete(pessoa);		
+		repository.delete(pessoa);
+	}
+	public void updateData(Pessoa pessoa, PessoaDTO objDto) {
+		pessoa.setNome(objDto.getNome());
+		pessoa.setDtNascimento(objDto.getDtNascimento());
 	}
 }

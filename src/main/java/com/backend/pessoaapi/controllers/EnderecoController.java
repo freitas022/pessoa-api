@@ -17,50 +17,42 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.pessoaapi.dto.EnderecoDTO;
 import com.backend.pessoaapi.models.Endereco;
 import com.backend.pessoaapi.services.EnderecoService;
-import com.backend.pessoaapi.services.PessoaService;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/api-enderecos")
+@RequestMapping(value = "/enderecos")
 public class EnderecoController {
 	
 	final EnderecoService enderecoService;
-	final PessoaService pessoaService;
 	
-	public EnderecoController(EnderecoService enderecoService, PessoaService pessoaService) {
+	public EnderecoController(EnderecoService enderecoService) {
 		this.enderecoService = enderecoService;
-		this.pessoaService = pessoaService;
 	}
 	//
 	@Transactional
-	@PostMapping(value = "/registrar")
-	public ResponseEntity<Object> criarEndereco(@RequestBody @Valid EnderecoDTO enderecoDTO) {		
+	@PostMapping(value = "/save")
+	public ResponseEntity<Object> saveEndereco(@RequestBody @Valid EnderecoDTO enderecoDTO) {		
 		var novoEndereco = new Endereco();
 		BeanUtils.copyProperties(enderecoDTO, novoEndereco);		
 		return ResponseEntity.status(HttpStatus.CREATED).body(enderecoService.save(novoEndereco));
 	}
 	//
-	@GetMapping(value = "/enderecos")
-	public ResponseEntity<List<Endereco>> obterEnderecos() {
+	@GetMapping(value = "/getAll")
+	public ResponseEntity<List<Endereco>> getAllEnderecos() {
 		return ResponseEntity.status(HttpStatus.OK).body(enderecoService.findAll());
 	}	
 	//
-	@PutMapping(value = "/atualizar/{id}")
-	public ResponseEntity<Object> atualizarEndereco(@PathVariable Long id, @RequestBody @Valid EnderecoDTO enderecoDTO) {
+	@PutMapping(value = "/update/{id}")
+	public ResponseEntity<Object> updateEndereco(@PathVariable Long id, @RequestBody @Valid EnderecoDTO objDTO) {
 		Optional<Endereco> enderecoOptional = enderecoService.findById(id);
 		if (!enderecoOptional.isPresent()) {		
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Endereco não encontrado. Id: ." + id);
-		}
+		}		
 		
-		var endereco = new Endereco();
-		BeanUtils.copyProperties(enderecoDTO, endereco);
-		endereco.setLogradouro(enderecoOptional.get().getLogradouro());
-		endereco.setNumero(enderecoOptional.get().getNumero());
-		endereco.setCidade(enderecoOptional.get().getCidade());
-		endereco.setEstado(enderecoOptional.get().getEstado());
-		
+		var endereco = enderecoOptional.get();
+		enderecoService.updateData(endereco, objDTO);		
 		return ResponseEntity.status(HttpStatus.OK).body(enderecoService.save(endereco));
 	}
 }
