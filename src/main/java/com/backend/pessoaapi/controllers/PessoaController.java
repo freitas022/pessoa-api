@@ -2,8 +2,13 @@ package com.backend.pessoaapi.controllers;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,22 +46,22 @@ public class PessoaController {
 	}
 	//
 	@GetMapping(value = "/getAll")
-	public ResponseEntity<List<Pessoa>> getPessoas() {
-		return ResponseEntity.status(HttpStatus.OK).body(service.findAll());
+	public ResponseEntity<Page<Pessoa>> getPessoas(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC ) Pageable pageable) {
+		return ResponseEntity.status(HttpStatus.OK).body(service.findAll(pageable));
 	}
 	//
 	@GetMapping(value = "/findBy/{id}")
-	public ResponseEntity<Object> getPessoaById(@PathVariable(value = "id") Long id) {
+	public ResponseEntity<Object> getPessoaById(@PathVariable(value = "id") UUID id) {
 		Optional<Pessoa> pessoaOptional = service.findById(id);
 		if (!pessoaOptional.isPresent() ) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado. Id: " + id);
 		}
 		
-		return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
+		return ResponseEntity.status(HttpStatus.OK).body(pessoaOptional.get());
 	}
 	//
 	@PutMapping(value = "/update/{id}")
-	public ResponseEntity<Object> updatePessoa(@PathVariable Long id, @RequestBody @Valid PessoaDTO objDto) {
+	public ResponseEntity<Object> updatePessoa(@PathVariable UUID id, @RequestBody @Valid PessoaDTO objDto) {
 		Optional<Pessoa> pessoaOptional = service.findById(id);
 		if (!pessoaOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado. Id: " + id);
@@ -67,7 +72,7 @@ public class PessoaController {
 	}
 	//
 	@DeleteMapping(value="/delete/{id}")
-	public ResponseEntity<Object> deletePessoa(@PathVariable(value = "id") Long id) {
+	public ResponseEntity<Object> deletePessoa(@PathVariable(value = "id") UUID id) {
 		Optional<Pessoa> pessoaOptional = service.findById(id);
 		if (!pessoaOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado. Id: " + id);
@@ -77,7 +82,7 @@ public class PessoaController {
 	}	
 	//
 	@GetMapping(value = "/{id}/enderecos")
-	public ResponseEntity<List<Endereco>> findAllEnderecosByPessoa(@PathVariable Long id) {
+	public ResponseEntity<List<Endereco>> findAllEnderecosByPessoa(@PathVariable UUID id) {
 		Optional<Pessoa> pessoaOptional = service.findById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(pessoaOptional.get().getEnderecos());
 	}

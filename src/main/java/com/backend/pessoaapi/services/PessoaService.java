@@ -1,8 +1,11 @@
 package com.backend.pessoaapi.services;
 
-import java.util.List;
-import java.util.Optional;
 
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.backend.pessoaapi.dto.PessoaDTO;
@@ -25,13 +28,13 @@ public class PessoaService {
 		 return repository.save(pessoa);
 	}
 	//
-	public List<Pessoa> findAll() {
-		return repository.findAll();
-	}
+	public Page<Pessoa> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
 	//
-	public Optional<Pessoa> findById(Long id) {
-		return repository.findById(id);	
-	}
+	public Optional<Pessoa> findById(UUID id) {
+        return repository.findById(id);
+    }	
 	//
 	@Transactional
 	public void delete(Pessoa pessoa) {
@@ -41,4 +44,6 @@ public class PessoaService {
 		pessoa.setNome(objDto.getNome());
 		pessoa.setDtNascimento(objDto.getDtNascimento());
 	}
+    
+
 }

@@ -2,6 +2,7 @@ package com.backend.pessoaapi.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,7 @@ public class EnderecoService {
 		return enderecoRepository.findAll();
 	}
 	//	
-	public Optional<Endereco> findById(Long id) {
+	public Optional<Endereco> findById(UUID id) {
 		return enderecoRepository.findById(id);
 	}
 	//

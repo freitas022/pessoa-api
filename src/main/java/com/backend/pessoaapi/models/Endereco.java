@@ -1,6 +1,7 @@
 package com.backend.pessoaapi.models;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import com.backend.pessoaapi.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -27,8 +28,8 @@ public class Endereco implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private UUID id;
 	@Column(nullable = false, length = 9)
 	private String cep;
 	@Column(nullable = false, length = 30)

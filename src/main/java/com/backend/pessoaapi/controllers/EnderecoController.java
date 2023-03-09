@@ -2,6 +2,7 @@ package com.backend.pessoaapi.controllers;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
@@ -45,7 +46,7 @@ public class EnderecoController {
 	}	
 	//
 	@PutMapping(value = "/update/{id}")
-	public ResponseEntity<Object> updateEndereco(@PathVariable Long id, @RequestBody @Valid EnderecoDTO objDTO) {
+	public ResponseEntity<Object> updateEndereco(@PathVariable UUID id, @RequestBody @Valid EnderecoDTO objDTO) {
 		Optional<Endereco> enderecoOptional = enderecoService.findById(id);
 		if (!enderecoOptional.isPresent()) {		
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Endereco não encontrado. Id: ." + id);
