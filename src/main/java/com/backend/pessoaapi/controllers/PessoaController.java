@@ -30,16 +30,18 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping(value = "/pessoas")
 public class PessoaController {
-
-	
+	//
 	final PessoaService service;
-	
+	//
 	public PessoaController(PessoaService service) {
 		this.service = service;
 	}
 	//
 	@PostMapping(value = "/save")
-	public ResponseEntity<Object> savePessoa(@RequestBody @Valid PessoaDTO pessoaDto) {
+	public ResponseEntity<Object> savePessoa(@RequestBody @Valid PessoaDTO pessoaDto) {		
+		if(service.existsPessoaByNome(pessoaDto.getNome())) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("ERRO! Usuário já cadastrado na base de dados: nome duplicado.");
+		}
 		var novaPessoa = new Pessoa();
 		BeanUtils.copyProperties(pessoaDto, novaPessoa);
 		return ResponseEntity.status(HttpStatus.CREATED).body(service.save(novaPessoa));
@@ -53,11 +55,10 @@ public class PessoaController {
 	@GetMapping(value = "/findBy/{id}")
 	public ResponseEntity<Object> getPessoaById(@PathVariable(value = "id") UUID id) {
 		Optional<Pessoa> pessoaOptional = service.findById(id);
-		if (!pessoaOptional.isPresent() ) {
+		if (!pessoaOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado. Id: " + id);
 		}
-		
-		return ResponseEntity.status(HttpStatus.OK).body(pessoaOptional.get());
+		return ResponseEntity.status(HttpStatus.OK).body(pessoaOptional.get());	
 	}
 	//
 	@PutMapping(value = "/update/{id}")

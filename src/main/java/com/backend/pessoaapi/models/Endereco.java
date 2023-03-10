@@ -32,13 +32,13 @@ public class Endereco implements Serializable {
 	private UUID id;
 	@Column(nullable = false, length = 9)
 	private String cep;
-	@Column(nullable = false, length = 30)
+	@Column(nullable = false, length = 40)
 	private String logradouro;
 	@Column(nullable = false)
 	private Integer numero;
-	@Column(nullable = false, length = 20)
+	@Column(nullable = false, length = 30)
 	private String cidade;
-	@Column(nullable = false, length = 15)
+	@Column(nullable = false, length = 20)
 	private String estado;
 	
 	

@@ -40,10 +40,13 @@ public class PessoaService {
 	public void delete(Pessoa pessoa) {
 		repository.delete(pessoa);
 	}
+	//
 	public void updateData(Pessoa pessoa, PessoaDTO objDto) {
 		pessoa.setNome(objDto.getNome());
 		pessoa.setDtNascimento(objDto.getDtNascimento());
 	}
-    
-
+	//
+	public boolean existsPessoaByNome(String nome) {
+		return repository.existsPessoaByNome(nome);
+	}
 }
